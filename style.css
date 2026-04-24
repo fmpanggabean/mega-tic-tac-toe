@@ -86,8 +86,8 @@ body {
 
 .mega-board {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: auto repeat(5, 1fr);
+    grid-template-rows: auto repeat(5, 1fr);
     gap: var(--grid-gap);
     background: var(--border-color);
     padding: var(--grid-gap);
@@ -96,6 +96,16 @@ body {
     height: min(95vh, 100%);
     width: min(95vh, 100%);
     aspect-ratio: 1 / 1;
+}
+
+.coord {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    user-select: none;
 }
 
 .sub-board {

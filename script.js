@@ -17,7 +17,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Init UI
     function initBoard() {
+        // Add top coordinates
+        const corner = document.createElement('div');
+        megaBoardEl.appendChild(corner);
+        
+        const letters = ['A', 'B', 'C', 'D', 'E'];
+        for (let i = 0; i < 5; i++) {
+            const coord = document.createElement('div');
+            coord.classList.add('coord');
+            coord.textContent = letters[i];
+            megaBoardEl.appendChild(coord);
+        }
+
         for (let b = 0; b < 25; b++) {
+            // Add left coordinate for the start of each row
+            if (b % 5 === 0) {
+                const coord = document.createElement('div');
+                coord.classList.add('coord');
+                coord.textContent = (b / 5) + 1;
+                megaBoardEl.appendChild(coord);
+            }
+
             const subBoard = document.createElement('div');
             subBoard.classList.add('sub-board');
             boards[b].element = subBoard;
