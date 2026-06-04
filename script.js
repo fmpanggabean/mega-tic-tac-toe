@@ -49,9 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 cell.dataset.cell = c;
 
                 cell.addEventListener('mouseenter', () => {
-                    if (!boards[b].disabled) {
-                        hoveredCell = { boardIndex: b, cellIndex: c, element: cell };
-                    }
+                    hoveredCell = { boardIndex: b, cellIndex: c, element: cell };
                 });
 
                 cell.addEventListener('mouseleave', () => {
@@ -62,11 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // For mobile or click-focus
                 cell.addEventListener('click', () => {
-                    if (!boards[b].disabled) {
-                        document.querySelectorAll('.cell.focused').forEach(el => el.classList.remove('focused'));
-                        cell.classList.add('focused');
-                        hoveredCell = { boardIndex: b, cellIndex: c, element: cell };
-                    }
+                    document.querySelectorAll('.cell.focused').forEach(el => el.classList.remove('focused'));
+                    cell.classList.add('focused');
+                    hoveredCell = { boardIndex: b, cellIndex: c, element: cell };
                 });
 
                 subBoard.appendChild(cell);
@@ -136,6 +132,48 @@ document.addEventListener('DOMContentLoaded', () => {
         updateScoreboard();
         
         // Keep hoveredCell correct if mouse hasn't moved
+        hoveredCell = null;
+    }
+
+    function handleClear() {
+        if (!hoveredCell) return;
+        const { boardIndex, cellIndex, element } = hoveredCell;
+
+        const previousNumber = boards[boardIndex].cells[cellIndex];
+        if (previousNumber === null) return; // Sudah kosong
+
+        boards[boardIndex].cells[cellIndex] = null;
+        element.textContent = '';
+        element.classList.remove(`num-${previousNumber}`);
+        element.classList.remove('filled');
+        element.classList.remove('focused');
+
+        // Evaluasi ulang pemenang sub-board setelah penghapusan
+        const winner = checkWinner(boardIndex);
+        if (winner && winner !== 'draw') {
+            boards[boardIndex].winner = winner;
+            boards[boardIndex].disabled = true;
+            boards[boardIndex].element.classList.add('disabled');
+            boards[boardIndex].element.setAttribute('data-winner', winner);
+            boards[boardIndex].element.style.opacity = '';
+        } else if (winner === 'draw') {
+            boards[boardIndex].winner = 'draw';
+            boards[boardIndex].disabled = true;
+            boards[boardIndex].element.classList.remove('disabled');
+            boards[boardIndex].element.removeAttribute('data-winner');
+            boards[boardIndex].element.style.opacity = '0.5';
+        } else {
+            // Jika kondisi menang/seri hilang, aktifkan kembali sub-board ini
+            boards[boardIndex].winner = null;
+            boards[boardIndex].disabled = false;
+            boards[boardIndex].element.classList.remove('disabled');
+            boards[boardIndex].element.removeAttribute('data-winner');
+            boards[boardIndex].element.style.opacity = '';
+        }
+
+        updateScoreboard();
+        
+        // Reset hoveredCell agar konsisten
         hoveredCell = null;
     }
 
@@ -226,6 +264,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Keyboard listener
     window.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.code === 'Space') {
+            if (hoveredCell) {
+                e.preventDefault(); // Mencegah halaman scroll ke bawah
+                handleClear();
+            }
+        }
         const num = parseInt(e.key);
         if (num >= 1 && num <= 9) {
             handleInput(num);

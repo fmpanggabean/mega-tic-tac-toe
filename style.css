@@ -136,6 +136,7 @@ body {
     text-shadow: 0 0 20px currentColor;
     opacity: 0;
     animation: fadeInScale 0.5s forwards ease-out;
+    pointer-events: none; /* Izinkan klik dan hover menembus overlay */
 }
 
 @keyframes fadeInScale {
