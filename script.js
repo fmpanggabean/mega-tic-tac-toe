@@ -15,6 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let hoveredCell = null; // { boardIndex, cellIndex, element }
 
+    // Game Configuration State
+    let pointPerBlock = 10;
+    let pointPerArea = 20;
+    let nullifyOpponents = true;
+    let gameStarted = false;
+
     // Init UI
     function initBoard() {
         // Add top coordinates
@@ -95,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleInput(number) {
+        if (!gameStarted) return;
         if (!hoveredCell) return;
         const { boardIndex, cellIndex, element } = hoveredCell;
 
@@ -136,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleClear() {
+        if (!gameStarted) return;
         if (!hoveredCell) return;
         const { boardIndex, cellIndex, element } = hoveredCell;
 
@@ -195,11 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
         boards.forEach(board => {
             board.cells.forEach(cellValue => {
                 if (cellValue !== null) {
-                    if (board.winner === null || board.winner === 'draw') {
-                        // Not won by anyone, all numbers get points
+                    if (!nullifyOpponents || board.winner === null || board.winner === 'draw') {
+                        // Not won by anyone, or nullifyOpponents is false, so all numbers get points
                         scores[cellValue].blocks++;
                     } else {
-                        // Won by someone
+                        // Won by someone and nullifyOpponents is true
                         if (cellValue == board.winner) {
                             // Winner gets their block points
                             scores[cellValue].blocks++;
@@ -214,9 +222,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Calculate totals
+        // Calculate totals with dynamic config
         for (let num in scores) {
-            scores[num].total = (scores[num].blocks * 10) + (scores[num].bonus * 20);
+            scores[num].total = (scores[num].blocks * pointPerBlock) + (scores[num].bonus * pointPerArea);
         }
 
         return scores;
@@ -264,6 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Keyboard listener
     window.addEventListener('keydown', (e) => {
+        if (!gameStarted) return;
         if (e.key === ' ' || e.code === 'Space') {
             if (hoveredCell) {
                 e.preventDefault(); // Mencegah halaman scroll ke bawah
@@ -274,6 +283,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (num >= 1 && num <= 9) {
             handleInput(num);
         }
+    });
+
+    // Setup Modal Logic
+    const setupModalEl = document.getElementById('setup-modal');
+    const inputBlockValEl = document.getElementById('input-block-val');
+    const inputAreaValEl = document.getElementById('input-area-val');
+    const checkboxNullifyEl = document.getElementById('checkbox-nullify');
+    const btnStartEl = document.getElementById('btn-start');
+
+    btnStartEl.addEventListener('click', () => {
+        const blockVal = parseInt(inputBlockValEl.value);
+        const areaVal = parseInt(inputAreaValEl.value);
+        
+        pointPerBlock = isNaN(blockVal) || blockVal < 0 ? 10 : blockVal;
+        pointPerArea = isNaN(areaVal) || areaVal < 0 ? 20 : areaVal;
+        nullifyOpponents = checkboxNullifyEl.checked;
+        
+        // Sembunyikan modal dengan animasi
+        setupModalEl.classList.add('hidden');
+        
+        // Izinkan game dimulai
+        gameStarted = true;
+        
+        // Inisialisasi awal papan skor
+        updateScoreboard();
     });
 
     initBoard();

@@ -294,3 +294,127 @@ body {
 .sub-board[data-winner="7"]::after { color: var(--c7); }
 .sub-board[data-winner="8"]::after { color: var(--c8); }
 .sub-board[data-winner="9"]::after { color: var(--c9); }
+
+/* Setup Modal Styles */
+.setup-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(15px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.setup-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.05);
+}
+
+.setup-content {
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 35px;
+    width: min(450px, 90%);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+}
+
+.setup-content h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.setup-subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    text-align: center;
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
+
+.setup-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.setup-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.setup-group input[type="number"] {
+    background: #0f172a;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.setup-group input[type="number"]:focus {
+    border-color: var(--highlight);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+}
+
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    margin: 8px 0;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--highlight);
+}
+
+.checkbox-group label {
+    cursor: pointer;
+    user-select: none;
+    line-height: 1.4;
+    font-size: 0.95rem;
+}
+
+.btn-start {
+    background: linear-gradient(135deg, var(--highlight), #0284c7);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+}
+
+.btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+}
+
+.btn-start:active {
+    transform: translateY(0);
+}
+
